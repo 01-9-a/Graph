@@ -5,12 +5,19 @@ import java.util.Set;
 
 public class AMGraph<V extends Vertex, E extends Edge<V>> implements MGraph<V, E> {
 
+    private int maxVertices;
+    private int[][] amGraph;
+    private V v1;
+    private V v2;
+
     /**
      * Create an empty graph with an upper-bound on the number of vertices
      * @param maxVertices is greater than 1
      */
     public AMGraph(int maxVertices) {
         // TODO: Implement this method
+        this.maxVertices = maxVertices;
+        amGraph = new int[maxVertices][maxVertices];
     }
 
     @Override

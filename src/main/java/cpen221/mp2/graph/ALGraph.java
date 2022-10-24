@@ -15,7 +15,7 @@ public class ALGraph<V extends Vertex, E extends Edge<V>> implements MGraph<V, E
 
     @Override
     public boolean addVertex(V v) {
-        if (numOfVexs>maxNumOfVexs) {
+        if (numOfVexs>maxNumOfVexs||alGraph.containsKey(v)) {
             return false;
         }
         List<E> vexs = new ArrayList<>();
