@@ -2,16 +2,16 @@ package cpen221.mp2;
 
 import cpen221.mp2.graph.ALGraph;
 import cpen221.mp2.graph.Edge;
-import cpen221.mp2.graph.Graph;
 import cpen221.mp2.graph.Vertex;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class GraphTest {
+public class Task1Test {
 
     @Test
-    public void testCreateGraph() {
+    public void test1() {
         Vertex v1 = new Vertex(1, "A");
         Vertex v2 = new Vertex(2, "B");
         Vertex v3 = new Vertex(3, "C");
@@ -21,7 +21,7 @@ public class GraphTest {
         Edge<Vertex> e2 = new Edge<>(v2, v3, 7);
         Edge<Vertex> e3 = new Edge<>(v1, v4, 9);
 
-        Graph<Vertex, Edge<Vertex>> g = new Graph<>();
+        ALGraph<Vertex, Edge<Vertex>> g = new ALGraph<>();
         g.addVertex(v1);
         g.addVertex(v2);
         g.addVertex(v3);
@@ -30,8 +30,9 @@ public class GraphTest {
         g.addEdge(e2);
         g.addEdge(e3);
 
-        assertEquals(e2, g.getEdge(v2, v3));
-        assertEquals(21, g.pathLength(g.shortestPath(v3, v4)));
+        assertTrue(g.vertex(v2));
+        assertEquals(7, g.edgeLength(v2,v3));
+        assertTrue(g.edge(e2));
+        assertTrue(g.edge(v2, v3));
     }
-
 }
