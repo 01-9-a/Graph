@@ -1,5 +1,6 @@
 package cpen221.mp2.graph;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -113,5 +114,4 @@ public interface MGraph<V extends Vertex, E extends Edge<V>> {
      * @return a map containing each vertex w that neighbors v and the edge between v and w.
      */
     Map<V, E> getNeighbours(V v);
-
 }
