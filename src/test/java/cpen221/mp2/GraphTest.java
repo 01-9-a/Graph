@@ -29,7 +29,7 @@ public class GraphTest {
         g.addEdge(e2);
         g.addEdge(e3);
 
-        //assertEquals(e2, g.getEdge(v2, v3));
+        assertEquals(e2, g.getEdge(v2, v3));
         assertEquals(21, g.pathLength(g.shortestPath(v3, v4)));
     }
 

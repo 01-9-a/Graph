@@ -13,37 +13,42 @@ public class Graph<V extends Vertex, E extends Edge<V>> implements ImGraph<V, E>
     @Override
     public E getEdge(V v1, V v2) {
         int length=0;
-        MGraph mg=new ALGraph();
-        Set<E> e_set =new HashSet<>(mg.allEdges());
+        int b=0;
+        //MGraph mg=new ALGraph();
+        Set<E> e_set =new HashSet<>(allEdges());
         for(E e:e_set){
-            if((e.v1()==v1&&e.v2()==v2)||(e.v2()==v1&&e.v1()==v2)){
+            if((e.v1()==v1&&e.v2()!=v2)||(e.v2()==v1&&e.v1()!=v2)){
                 length=e.length();
-            }else throw new NoSuchElementException("No Such edge existed");
+                b=1;
+            }
         }
-        Edge e_obj=new Edge<>(v1,v2,length);
+        if(b==0){
+            throw new NoSuchElementException("no such edge found");
+        }
+        Edge<V> e_obj=new Edge<>(v1,v2,length);
         return (E) e_obj;
     }
 
     public ArrayList<V> get_neighbour_vertex(V v){
-        MGraph mg=new ALGraph();
-        Map<V,E> neighbour=new HashMap<>(mg.getNeighbours(v));
+        //MGraph mg=new ALGraph();
+        Map<V,E> neighbour=new HashMap<>(getNeighbours(v));
         Set<V> neighbour_v_set=new HashSet<>(neighbour.keySet());
         return new ArrayList<>(neighbour_v_set);
     }
 
     public ArrayList<ArrayList<V>> GetAllPath(V start, V end){
-        MGraph mg=new ALGraph();
+        //MGraph mg=new ALGraph();
         Map<V, ArrayList<V>> neighbour_map=new HashMap<>();
-        Set<V> all_vertex=new HashSet<>(mg.allVertices());
+        Set<V> all_vertex=new HashSet<>(allVertices());
         ArrayList<ArrayList<V>> AllPath=new ArrayList<>();
         for(V v:all_vertex){
             ArrayList<V> m=new ArrayList<>(get_neighbour_vertex(v));
             neighbour_map.put(v,m);
         }
         Queue<ArrayList<V>> queue=new LinkedList<>();
-        ArrayList<V> al= new ArrayList<>();
-        al.add(start);
-        queue.offer(al);
+        ArrayList<V> arr= new ArrayList<>();
+        arr.add(start);
+        queue.offer(arr);
         while(!queue.isEmpty()){
             ArrayList<V> path;
             path=queue.poll();
@@ -71,9 +76,9 @@ public class Graph<V extends Vertex, E extends Edge<V>> implements ImGraph<V, E>
         int min_length=Integer.MAX_VALUE;
         for(ArrayList<V> al :AllPath){
             int length=0;
-            for(int i=0;i<al.size();i++){
-                MGraph obj=new ALGraph();
-                length+= obj.edgeLength(al.get(i),al.get(i+1));
+            for(int i=0;i<al.size()-1;i++){
+                //MGraph obj=new ALGraph();
+                length+= edgeLength(al.get(i),al.get(i+1));
             }
             if(length<min_length){
                 min_length=length;
@@ -85,16 +90,11 @@ public class Graph<V extends Vertex, E extends Edge<V>> implements ImGraph<V, E>
 
     @Override
     public int pathLength(List<V> path) {
-        int path_length=0;
-        Set<E> edge_set=new HashSet<>(allEdges());
-        for(int i=0; i<path.size();i++ ){
-            for(E e:edge_set){
-                if(e.v1().equals(path.get(i))&&e.v2().equals(path.get(i+1))){
-                    path_length+=e.length();
-                }
-            }
+        int length=0;
+        for(int i=0; i<path.size()-1;i++ ){
+            length+= edgeLength(path.get(i),path.get(i+1));
         }
-        return path_length;
+        return length;
     }
 
     @Override
@@ -122,16 +122,13 @@ public class Graph<V extends Vertex, E extends Edge<V>> implements ImGraph<V, E>
         if(al.containsKey(v)){
             return false;
         }
-        al.put(v,new ArrayList<E>());
+        al.put(v, new ArrayList<>());
         return true;
     }
 
     @Override
     public boolean vertex(V v) {
-        if(al.containsKey(v)) {
-            return true;
-        }
-        return false;
+        return al.containsKey(v);
     }
 
     @Override
@@ -149,10 +146,7 @@ public class Graph<V extends Vertex, E extends Edge<V>> implements ImGraph<V, E>
     @Override
     public boolean edge(E e) {
         Set<E> edge_set=new HashSet<>(allEdges());
-        if (edge_set.contains(e)) {
-            return true;
-        }
-        return false;
+        return edge_set.contains(e);
     }
 
     @Override
@@ -175,10 +169,12 @@ public class Graph<V extends Vertex, E extends Edge<V>> implements ImGraph<V, E>
 
     @Override
     public int edgeLength(V v1, V v2) {
-        int length=0;
         ArrayList<E> e_list=al.get(v1);
-        for(E e: e_list){
-            if((e.v1()==v1 && e.v2()==v2)) {
+        for(E e: e_list) {
+            if ((e.v1() == v1 && e.v2() == v2)) {
+                return e.length();
+            }
+            if ((e.v1() == v2 && e.v2() == v1)) {
                 return e.length();
             }
         }
@@ -186,11 +182,6 @@ public class Graph<V extends Vertex, E extends Edge<V>> implements ImGraph<V, E>
     }
 
     @Override
-    /**
-     * Obtain the sum of the lengths of all edges in the graph
-     *
-     * @return the sum of the lengths of all edges in the graph
-     */
     public int edgeLengthSum() {
         int sum=0;
         for(V key:al.keySet()){
@@ -204,32 +195,64 @@ public class Graph<V extends Vertex, E extends Edge<V>> implements ImGraph<V, E>
 
     @Override
     public boolean remove(E e) {
-        return false;
+        if(edge(e)){
+            for(V key:al.keySet()){
+                ArrayList<E> e_list=al.get(key);
+                for(E m:e_list){
+                    if(m==e){
+                        e_list.remove(m);
+                    }
+                }
+                al.put(key,e_list);
+            }
+            return false;
+        }
+
+        return true;
     }
 
     @Override
     public boolean remove(V v) {
-        return false;
+        if(vertex(v)){
+            al.remove(v);
+            return false;
+        }
+        return true;
     }
 
     @Override
     public Set<V> allVertices() {
-        return null;
+        return new HashSet<>(al.keySet());
     }
 
     @Override
     public Set<E> allEdges(V v) {
-        return null;
+        return new HashSet<>(al.get(v));
     }
 
     @Override
     public Set<E> allEdges() {
-        return null;
+        Set<E> e_set=new HashSet<>();
+        Set<V> v_set=new HashSet<>(al.keySet());
+        for(V v:v_set){
+            e_set.addAll(allEdges(v));
+        }
+        return e_set;
     }
 
     @Override
     public Map<V, E> getNeighbours(V v) {
-        return null;
+        Map<V,E> neighbour=new HashMap<>();
+        Set<E> edge_set=allEdges();
+        for(E e:edge_set){
+            if(e.v1()==v){
+                neighbour.put(e.v2(),e);
+            }
+            else if(e.v2()==v){
+                neighbour.put(e.v1(),e);
+            }
+        }
+        return neighbour;
     }
 
     /**
