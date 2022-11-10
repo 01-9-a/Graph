@@ -1,9 +1,13 @@
 package cpen221.mp2;
 
 import cpen221.mp2.graph.ALGraph;
+import cpen221.mp2.graph.AMGraph;
 import cpen221.mp2.graph.Edge;
 import cpen221.mp2.graph.Vertex;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class Task3Test {
 
@@ -13,18 +17,38 @@ public class Task3Test {
         Vertex v2 = new Vertex(2, "B");
         Vertex v3 = new Vertex(3, "C");
         Vertex v4 = new Vertex(4, "D");
+        Vertex v5 = new Vertex(5, "E");
+        Vertex v6 = new Vertex(6, "F");
+        Vertex v7 = new Vertex(7, "E");
 
         Edge<Vertex> e1 = new Edge<>(v1, v2, 5);
         Edge<Vertex> e2 = new Edge<>(v2, v3, 7);
         Edge<Vertex> e3 = new Edge<>(v1, v4, 9);
+        Edge<Vertex> e4 = new Edge<>(v1, v3, 3);
+        Edge<Vertex> e5 = new Edge<>(v2, v5, 11);
+        Edge<Vertex> e6 = new Edge<>(v3, v6, 2);
+        Edge<Vertex> e7 = new Edge<>(v7, v6, 15);
 
         ALGraph<Vertex, Edge<Vertex>> g = new ALGraph<>();
         g.addVertex(v1);
         g.addVertex(v2);
         g.addVertex(v3);
         g.addVertex(v4);
+        g.addVertex(v5);
+        g.addVertex(v6);
+        g.addVertex(v7);
         g.addEdge(e1);
         g.addEdge(e2);
         g.addEdge(e3);
+        g.addEdge(e4);
+        g.addEdge(e5);
+        g.addEdge(e6);
+        g.addEdge(e7);
+
+        assertTrue(g.vertex(v2));
+        assertEquals(7, g.edgeLength(v2,v3));
+        assertTrue(g.edge(e2));
+        assertTrue(g.edge(v2, v3));
+
     }
 }

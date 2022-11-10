@@ -4,7 +4,7 @@ import java.util.*;
 
 public class ALGraph<V extends Vertex, E extends Edge<V>> implements MGraph<V, E> {
 
-    Map<V, ArrayList<E>> al=new LinkedHashMap<>();
+    public Map<V, ArrayList<E>> al=new LinkedHashMap<>();
     @Override
     /**
      * Add a vertex to the graph
@@ -48,7 +48,7 @@ public class ALGraph<V extends Vertex, E extends Edge<V>> implements MGraph<V, E
             return false;
         }
         al.get(e.v1()).add(e);
-        //al.get(e.v2()).add(e);
+        al.get(e.v2()).add(e);
         return true;
     }
 
@@ -80,6 +80,11 @@ public class ALGraph<V extends Vertex, E extends Edge<V>> implements MGraph<V, E
         for(E e:v_list){
             if(e.v1()==v1){
                 if(e.v2()==v2){
+                    return true;
+                }
+            }
+            if(e.v2()==v1){
+                if(e.v1()==v2){
                     return true;
                 }
             }
