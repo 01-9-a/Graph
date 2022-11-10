@@ -85,11 +85,13 @@ public class ALGraph<V extends Vertex, E extends Edge<V>> implements MGraph<V, E
     public boolean remove(E e) {
         if(edge(e)){
             for(V key:al.keySet()){
-                ArrayList<E> e_list=al.get(key);
-                e_list.removeIf(m -> m == e);
-                al.put(key,e_list);
+                if(al.get(key).contains(e)){
+                    al.get(key).remove(e);
+                    return false;
+
+                }
             }
-            return false;
+
         }
 
         return true;

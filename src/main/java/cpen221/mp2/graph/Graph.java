@@ -17,13 +17,13 @@ public class Graph<V extends Vertex, E extends Edge<V>> implements ImGraph<V, E>
         //MGraph mg=new ALGraph();
         Set<E> e_set =new HashSet<>(allEdges());
         for(E e:e_set){
-            if((e.v1()==v1&&e.v2()!=v2)||(e.v2()==v1&&e.v1()!=v2)){
+            if((e.v1()==v1&&e.v2()==v2)||(e.v2()==v1&&e.v1()==v2)){
                 length=e.length();
                 b=1;
             }
         }
         if(b==0){
-            throw new NoSuchElementException("no such edge found");
+            throw new NoSuchElementException();
         }
         Edge<V> e_obj=new Edge<>(v1,v2,length);
         return (E) e_obj;
@@ -170,25 +170,25 @@ public class Graph<V extends Vertex, E extends Edge<V>> implements ImGraph<V, E>
     @Override
     public int edgeLength(V v1, V v2) {
         ArrayList<E> e_list=al.get(v1);
-        for(E e: e_list) {
-            if ((e.v1() == v1 && e.v2() == v2)) {
-                return e.length();
+        for (E e : e_list) {
+                if ((e.v1() == v1 && e.v2() == v2) || (e.v1() == v2 && e.v2() == v1)) {
+                    return e.length();
+                }
             }
-            if ((e.v1() == v2 && e.v2() == v1)) {
-                return e.length();
-            }
-        }
-        return 0;
+
+            throw new NoSuchElementException();
     }
 
     @Override
     public int edgeLengthSum() {
         int sum=0;
+        Set<E> set=new HashSet<>();
         for(V key:al.keySet()){
             ArrayList<E> e_list=al.get(key);
-            for(E e:e_list){
-                sum+=e.length();
-            }
+            set.addAll(e_list);
+        }
+        for(E e:set){
+            sum+=e.length();
         }
         return sum;
     }
@@ -196,15 +196,7 @@ public class Graph<V extends Vertex, E extends Edge<V>> implements ImGraph<V, E>
     @Override
     public boolean remove(E e) {
         if(edge(e)){
-            for(V key:al.keySet()){
-                ArrayList<E> e_list=al.get(key);
-                for(E m:e_list){
-                    if(m==e){
-                        e_list.remove(m);
-                    }
-                }
-                al.put(key,e_list);
-            }
+            al.forEach((a,b) -> b.removeIf(c->c.equals(e)));
             return false;
         }
 
