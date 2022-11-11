@@ -3,6 +3,7 @@ package cpen221.mp2;
 import cpen221.mp2.graph.*;
 import org.junit.jupiter.api.Test;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
@@ -55,36 +56,43 @@ public class Task3Test {
         assertTrue(g.remove(e_not_added));
 
 
-
-
         assertEquals(e2, g.getEdge(v2, v3));
         assertEquals(e5, g.getEdge(v5, v2));
         NoSuchElementException l1 = assertThrows(
                 NoSuchElementException.class, () -> {
-                    g.getEdge(v3,v4);
+                    g.getEdge(v3, v4);
                 });
         NoSuchElementException l2 = assertThrows(
                 NoSuchElementException.class, () -> {
-                    g.getEdge(v6,v2);
+                    g.getEdge(v6, v2);
                 });
         assertEquals(21, g.pathLength(g.shortestPath(v3, v4)));
         assertEquals(3, g.pathLength(g.shortestPath(v3, v5)));
         assertEquals(14, g.pathLength(g.shortestPath(v6, v1)));
 
         //test mggraph
-        assertFalse(g.edge(v3,v4));
+        assertFalse(g.edge(v3, v4));
         assertTrue(g.edge(e2));
         assertTrue(g.edge(v2, v3));
         assertTrue(g.edge(v2, v1));
         assertEquals(45, g.edgeLengthSum());
-        Map<Vertex,Edge> neighbours_expected = Map.of(v2,e1,v4,e3);
-        Map<Vertex,Edge> neighbours_actual=Map.copyOf(g.getNeighbours(v1));
+        Map<Vertex, Edge> neighbours_expected = Map.of(v2, e1, v4, e3);
+        Map<Vertex, Edge> neighbours_actual = Map.copyOf(g.getNeighbours(v1));
         assertTrue(g.vertex(v2));
         assertEquals(9, g.edgeLength(v1, v4));
         assertTrue(neighbours_expected.equals(neighbours_actual));
         NoSuchElementException l3 = assertThrows(
                 NoSuchElementException.class, () -> {
-                    g.edgeLength(v3,v4);
+                    g.edgeLength(v3, v4);
                 });
+
+        //test get neighbours
+        Map<Vertex, Edge> map1=new HashMap<>();
+        map1.put(v2, e1);
+        map1.put(v3, e2);
+        map1.put(v4, e3);
+        assertEquals(map1, g.getNeighbours(v1,12));
+        assertTrue(g.getNeighbours(v2,3).isEmpty());
     }
+
 }
