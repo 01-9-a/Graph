@@ -175,11 +175,8 @@ public class ALGraph<V extends Vertex, E extends Edge<V>> implements MGraph<V, E
         if(vertex(v)){
             numV--;
             setV.remove(v);
-            for(List<V> l: adjList){
-                if(l.get(0)==v){
-                    adjList.remove(l);
-                }
-            }
+            adjList.removeIf(l -> l.get(0) == v);
+            setE.removeIf(e -> e.v1().equals(v) || e.v2().equals(v));
             return true;
         }
         else {
@@ -234,8 +231,13 @@ public class ALGraph<V extends Vertex, E extends Edge<V>> implements MGraph<V, E
     public Map<V, E> getNeighbours(V v) {
         Map<V, E> map = new HashMap<>();{
             for(E e: setE){
-                if(e.v1()==v || e.v2()==v){
-                    map.put(v, e);
+                if(e.v1().equals(v) || e.v2().equals(v)){
+                    if(e.v1().equals(v)){
+                        map.put(e.v2(), e);
+                    }
+                    if(e.v2().equals(v)){
+                        map.put(e.v1(), e);
+                    }
                 }
             }
         }
