@@ -9,7 +9,15 @@ import java.util.*;
  */
 public class Graph<V extends Vertex, E extends Edge<V>> implements ImGraph<V, E>, MGraph<V, E> {
     Map<V, ArrayList<E>> al=new LinkedHashMap<>();
-
+    /**
+     * Find the edge that connects two vertices if such an edge exists.
+     * This method should not permit graph mutations.
+     *
+     * @param v1 one end of the edge
+     * @param v2 the other end of the edge
+     * @return the edge connecting v1 and v2
+     * throw NoSuchElementException if no such edge found
+     */
     @Override
     public E getEdge(V v1, V v2) {
         int length=0;
@@ -29,15 +37,25 @@ public class Graph<V extends Vertex, E extends Edge<V>> implements ImGraph<V, E>
         return (E) e_obj;
     }
 
+    /**
+     * obtain all the neighbours of vertex v.
+     *
+     * @param v is the vertex whose neighbourhood we want.
+     * @return an arraylist containing each vertex w that neighbors v
+     */
     public ArrayList<V> get_neighbour_vertex(V v){
-        //MGraph mg=new ALGraph();
         Map<V,E> neighbour=new HashMap<>(getNeighbours(v));
         Set<V> neighbour_v_set=new HashSet<>(neighbour.keySet());
         return new ArrayList<>(neighbour_v_set);
     }
 
+    /**
+     * obtain all paths from vertex start to vertex end
+     * @param start the start vertex
+     * @param end the end vertex
+     * @return an arraylist that contains all paths from start to end
+     */
     public ArrayList<ArrayList<V>> GetAllPath(V start, V end){
-        //MGraph mg=new ALGraph();
         Map<V, ArrayList<V>> neighbour_map=new HashMap<>();
         Set<V> all_vertex=new HashSet<>(allVertices());
         ArrayList<ArrayList<V>> AllPath=new ArrayList<>();
@@ -68,7 +86,13 @@ public class Graph<V extends Vertex, E extends Edge<V>> implements ImGraph<V, E>
         }
         return AllPath;
     }
-
+    /**
+     * Compute the shortest path from source to sink
+     *
+     * @param source the start vertex
+     * @param sink   the end vertex
+     * @return the vertices, in order, on the shortest path from source to sink (both end points are part of the list)
+     */
     @Override
     public List<V> shortestPath(V source, V sink) {
         ArrayList<ArrayList<V>> AllPath=new ArrayList<>(GetAllPath(source,sink));
@@ -88,6 +112,12 @@ public class Graph<V extends Vertex, E extends Edge<V>> implements ImGraph<V, E>
         return shortest_path;
     }
 
+    /**
+     * Compute the length of a given path
+     *
+     * @param path indicates the vertices on the given path
+     * @return the length of path
+     */
     @Override
     public int pathLength(List<V> path) {
         int length=0;
@@ -96,10 +126,28 @@ public class Graph<V extends Vertex, E extends Edge<V>> implements ImGraph<V, E>
         }
         return length;
     }
-
+    /**
+     * Obtain all vertices w that are no more than a <em>path distance</em> of range from v.
+     *
+     * @param v     the vertex to start the search from.
+     * @param range the radius of the search.
+     * @return a map where the keys are the vertices in the neighbourhood of v,
+     *          and the value for key w is the last edge on the shortest path
+     *          from v to w.
+     */
     @Override
     public Map<V, E> getNeighbours(V v, int range) {
-        return null;
+        Map<V,E> map=new HashMap<>();
+        Set<V> all_v= new HashSet<>(allVertices());
+        all_v.remove(v);
+        for(V a:all_v){
+            List<V> list=new ArrayList<>(shortestPath(v,a));
+            int shortest_length=pathLength(list);
+            if(list.size()>=2&&shortest_length<=range){
+               map.put(a,getEdge(list.get(list.size()-2),a));
+            }
+        }
+        return map;
     }
 
     @Override
@@ -116,7 +164,12 @@ public class Graph<V extends Vertex, E extends Edge<V>> implements ImGraph<V, E>
     public V getCenter() {
         return null;
     }
-
+    /**
+     * Add a vertex to the graph
+     *
+     * @param v vertex to add
+     * @return true if the vertex was added successfully and false otherwise
+     */
     @Override
     public boolean addVertex(V v) {
         if(al.containsKey(v)){
@@ -125,12 +178,22 @@ public class Graph<V extends Vertex, E extends Edge<V>> implements ImGraph<V, E>
         al.put(v, new ArrayList<>());
         return true;
     }
-
+    /**
+     * Check if a vertex is part of the graph
+     *
+     * @param v vertex to check in the graph
+     * @return true of v is part of the graph and false otherwise
+     */
     @Override
     public boolean vertex(V v) {
         return al.containsKey(v);
     }
-
+    /**
+     * Add an edge of the graph
+     *
+     * @param e the edge to add to the graph
+     * @return true if the edge was successfully added and false otherwise
+     */
     @Override
     public boolean addEdge(E e) {
         boolean v1=al.containsKey(e.v1());
@@ -142,12 +205,24 @@ public class Graph<V extends Vertex, E extends Edge<V>> implements ImGraph<V, E>
         al.get(e.v2()).add(e);
         return true;
     }
-
+    /**
+     * Check if an edge is part of the graph
+     *
+     * @param e the edge to check in the graph
+     * @return true if e is an edge in the graoh and false otherwise
+     */
     @Override
     public boolean edge(E e) {
         Set<E> edge_set=new HashSet<>(allEdges());
         return edge_set.contains(e);
     }
+    /**
+     * Check if v1-v2 is an edge in the graph
+     *
+     * @param v1 the first vertex of the edge
+     * @param v2 the second vertex of the edge
+     * @return true of the v1-v2 edge is part of the graph and false otherwise
+     */
 
     @Override
     public boolean edge(V v1, V v2) {
@@ -166,19 +241,32 @@ public class Graph<V extends Vertex, E extends Edge<V>> implements ImGraph<V, E>
         }
         return false;
     }
-
+    /**
+     * Determine the length on an edge in the graph
+     *
+     * @param v1 the first vertex of the edge
+     * @param v2 the second vertex of the edge
+     * @return the length of the v1-v2 edge if this edge is part of the graph
+     * throw NoSuchElementException if v1,v2 edge is not part of the graph
+     */
     @Override
     public int edgeLength(V v1, V v2) {
         ArrayList<E> e_list=al.get(v1);
-        for (E e : e_list) {
+        if(edge(v1,v2)) {
+            for (E e : e_list) {
                 if ((e.v1() == v1 && e.v2() == v2) || (e.v1() == v2 && e.v2() == v1)) {
                     return e.length();
                 }
             }
 
-            throw new NoSuchElementException();
+        }
+        throw new NoSuchElementException();
     }
-
+    /**
+     * Obtain the sum of the lengths of all edges in the graph
+     *
+     * @return the sum of the lengths of all edges in the graph
+     */
     @Override
     public int edgeLengthSum() {
         int sum=0;
@@ -192,7 +280,12 @@ public class Graph<V extends Vertex, E extends Edge<V>> implements ImGraph<V, E>
         }
         return sum;
     }
-
+    /**
+     * Remove an edge from the graph
+     *
+     * @param e the edge to remove
+     * @return true if e was successfully removed and false otherwise
+     */
     @Override
     public boolean remove(E e) {
         if(edge(e)){
@@ -202,7 +295,12 @@ public class Graph<V extends Vertex, E extends Edge<V>> implements ImGraph<V, E>
 
         return true;
     }
-
+    /**
+     * Remove a vertex from the graph
+     *
+     * @param v the vertex to remove
+     * @return true if v was successfully removed and false otherwise
+     */
     @Override
     public boolean remove(V v) {
         if(vertex(v)){
@@ -211,17 +309,33 @@ public class Graph<V extends Vertex, E extends Edge<V>> implements ImGraph<V, E>
         }
         return true;
     }
-
+    /**
+     * Obtain a set of all vertices in the graph.
+     * Access to this set **should not** permit graph mutations.
+     *
+     * @return a set of all vertices in the graph
+     */
     @Override
     public Set<V> allVertices() {
         return new HashSet<>(al.keySet());
     }
-
+    /**
+     * Obtain a set of all vertices incident on v.
+     * Access to this set **should not** permit graph mutations.
+     *
+     * @param v the vertex of interest
+     * @return all edges incident on v
+     */
     @Override
     public Set<E> allEdges(V v) {
         return new HashSet<>(al.get(v));
     }
-
+    /**
+     * Obtain a set of all edges in the graph.
+     * Access to this set **should not** permit graph mutations.
+     *
+     * @return all edges in the graph
+     */
     @Override
     public Set<E> allEdges() {
         Set<E> e_set=new HashSet<>();
@@ -231,7 +345,13 @@ public class Graph<V extends Vertex, E extends Edge<V>> implements ImGraph<V, E>
         }
         return e_set;
     }
-
+    /**
+     * Obtain all the neighbours of vertex v.
+     * Access to this map **should not** permit graph mutations.
+     *
+     * @param v is the vertex whose neighbourhood we want.
+     * @return a map containing each vertex w that neighbors v and the edge between v and w.
+     */
     @Override
     public Map<V, E> getNeighbours(V v) {
         Map<V,E> neighbour=new HashMap<>();
