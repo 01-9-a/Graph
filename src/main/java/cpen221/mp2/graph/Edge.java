@@ -1,5 +1,6 @@
 package cpen221.mp2.graph;
 
+import java.util.Comparator;
 import java.util.NoSuchElementException;
 
 public class Edge<V extends Vertex> implements Cloneable {
@@ -118,5 +119,4 @@ public class Edge<V extends Vertex> implements Cloneable {
             return v1;
         }
     }
-
 }

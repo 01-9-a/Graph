@@ -12,7 +12,7 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class Test1 {
+public class ALGraphTest {
 
     @Test
     public void test1() {
