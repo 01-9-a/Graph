@@ -24,13 +24,14 @@ public class Graph<V extends Vertex, E extends Edge<V>> implements ImGraph<V, E>
         int b=0;
         //MGraph mg=new ALGraph();
         Set<E> e_set =new HashSet<>(allEdges());
-        for(E e:e_set){
-            if((e.v1()==v1&&e.v2()==v2)||(e.v2()==v1&&e.v1()==v2)){
-                length=e.length();
-                b=1;
+        if(edge(v1,v2)) {
+            for (E e : e_set) {
+                if ((e.v1() == v1 && e.v2() == v2) || (e.v2() == v1 && e.v1() == v2)) {
+                    length = e.length();
+                }
             }
         }
-        if(b==0){
+        else{
             throw new NoSuchElementException();
         }
         Edge<V> e_obj=new Edge<>(v1,v2,length);
@@ -242,7 +243,7 @@ public class Graph<V extends Vertex, E extends Edge<V>> implements ImGraph<V, E>
         return false;
     }
     /**
-     * Determine the length on an edge in the graph
+     * Determine the length on an edge in the graph, if v1 equals v2, it should return 0;
      *
      * @param v1 the first vertex of the edge
      * @param v2 the second vertex of the edge
@@ -252,13 +253,16 @@ public class Graph<V extends Vertex, E extends Edge<V>> implements ImGraph<V, E>
     @Override
     public int edgeLength(V v1, V v2) {
         ArrayList<E> e_list=al.get(v1);
-        if(edge(v1,v2)) {
-            for (E e : e_list) {
-                if ((e.v1() == v1 && e.v2() == v2) || (e.v1() == v2 && e.v2() == v1)) {
-                    return e.length();
+        if(v1.equals(v2)){
+            return 0;
+        }else {
+            if (edge(v1, v2)) {
+                for (E e : e_list) {
+                    if ((e.v1() .equals(v1) && e.v2().equals(v2)) || (e.v1().equals(v2) && e.v2().equals(v1))) {
+                        return e.length();
+                    }
                 }
             }
-
         }
         throw new NoSuchElementException();
     }

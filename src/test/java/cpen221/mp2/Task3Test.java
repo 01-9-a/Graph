@@ -28,7 +28,8 @@ public class Task3Test {
         Edge<Vertex> e5 = new Edge<>(v2, v5, 11);
         Edge<Vertex> e6 = new Edge<>(v3, v6, 2);
         Edge<Vertex> e7 = new Edge<>(v5, v6, 8);
-        Edge<Vertex> e_not_exist = new Edge<>(v6, v7, 2);
+        Edge<Vertex> e_not_exist1 = new Edge<>(v6, v7, 2);
+        Edge<Vertex> e_not_exist2 = new Edge<>(v7, v6, 2);
         Edge<Vertex> e_not_added = new Edge<>(v1, v6, 1);
 
         Graph<Vertex, Edge<Vertex>> g = new Graph<>();
@@ -50,7 +51,8 @@ public class Task3Test {
         g.addEdge(e5);
         g.addEdge(e6);
         g.addEdge(e7);
-        assertFalse(g.addEdge(e_not_exist));
+        assertFalse(g.addEdge(e_not_exist1));
+        assertFalse(g.addEdge(e_not_exist2));
         g.addEdge(e_not_added);
         assertFalse(g.remove(e_not_added));
         assertTrue(g.remove(e_not_added));
@@ -71,6 +73,7 @@ public class Task3Test {
         assertEquals(14, g.pathLength(g.shortestPath(v6, v1)));
 
         //test mggraph
+        assertEquals(0, g.edgeLength(v1,v1));
         assertFalse(g.edge(v3, v4));
         assertTrue(g.edge(e2));
         assertTrue(g.edge(v2, v3));
