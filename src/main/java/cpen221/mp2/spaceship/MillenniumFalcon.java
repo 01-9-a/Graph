@@ -52,6 +52,7 @@ public class MillenniumFalcon implements Spaceship {
             List<PlanetStatus> statusList = new ArrayList<>(Arrays.stream(status).toList());
             //go to the planet with the strongest signal
             Collections.sort(statusList);
+            Collections.reverse(statusList);
             state.moveTo(statusList.get(0).id());
         }
     }
