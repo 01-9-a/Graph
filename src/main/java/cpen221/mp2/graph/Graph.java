@@ -87,7 +87,6 @@ public class Graph<V extends Vertex, E extends Edge<V>> implements ImGraph<V, E>
         }
         return AllPath;
     }
-    public static void()
     /**
      * Compute the shortest path from source to sink
      *
@@ -450,7 +449,14 @@ public class Graph<V extends Vertex, E extends Edge<V>> implements ImGraph<V, E>
      */
     @Override
     public boolean addEdge(E e) {
-        if()
+            if(!edge(e)){
+                if(vertex(e.v1())&&vertex(e.v2())){
+                    al.get(e.v1()).add(e);
+                    al.get(e.v2()).add(e);
+                }
+                return true;
+            }
+            return false;
     }
     /**
      * Check if an edge is part of the graph
