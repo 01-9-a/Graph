@@ -8,7 +8,7 @@ import java.util.*;
  * @param <V> represents a vertex type
  */
 public class Graph<V extends Vertex, E extends Edge<V>> implements ImGraph<V, E>, MGraph<V, E> {
-    Map<V, ArrayList<E>> al=new LinkedHashMap<>();
+    public Map<V, HashSet<E>> al= new TreeMap<>(Comparator.comparingInt(Vertex::id));
     /**
      * Find the edge that connects two vertices if such an edge exists.
      * This method should not permit graph mutations.
@@ -145,7 +145,7 @@ public class Graph<V extends Vertex, E extends Edge<V>> implements ImGraph<V, E>
             List<V> list=new ArrayList<>(shortestPath(v,a));
             int shortest_length=pathLength(list);
             if(list.size()>=2&&shortest_length<=range){
-               map.put(a,getEdge(list.get(list.size()-2),a));
+                map.put(a,getEdge(list.get(list.size()-2),a));
             }
         }
         return map;
@@ -428,7 +428,7 @@ public class Graph<V extends Vertex, E extends Edge<V>> implements ImGraph<V, E>
         if(al.containsKey(v)){
             return false;
         }
-        al.put(v, new ArrayList<>());
+        al.put(v, new HashSet<>());
         return true;
     }
     /**
@@ -479,7 +479,7 @@ public class Graph<V extends Vertex, E extends Edge<V>> implements ImGraph<V, E>
 
     @Override
     public boolean edge(V v1, V v2) {
-        ArrayList<E> v_list=al.get(v1);
+        HashSet<E> v_list=al.get(v1);
         for(E e:v_list){
             if(e.v1()==v1){
                 if(e.v2()==v2){
@@ -504,7 +504,7 @@ public class Graph<V extends Vertex, E extends Edge<V>> implements ImGraph<V, E>
      */
     @Override
     public int edgeLength(V v1, V v2) {
-        ArrayList<E> e_list=al.get(v1);
+        HashSet<E> e_list=al.get(v1);
         if(v1.equals(v2)){
             return 0;
         }else {
@@ -528,7 +528,7 @@ public class Graph<V extends Vertex, E extends Edge<V>> implements ImGraph<V, E>
         int sum=0;
         Set<E> set=new HashSet<>();
         for(V key:al.keySet()){
-            ArrayList<E> e_list=al.get(key);
+            HashSet<E> e_list=al.get(key);
             set.addAll(e_list);
         }
         for(E e:set){
@@ -686,6 +686,28 @@ public class Graph<V extends Vertex, E extends Edge<V>> implements ImGraph<V, E>
             candidates.remove(end);
             remove(trim);
         }
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+
+        if (obj.getClass() != this.getClass()) {
+            return false;
+        }
+
+        Graph<V, E> other = (Graph<V, E>) obj;
+        if(other.al.size()==this.al.size()) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return al.hashCode();
     }
 }
 
