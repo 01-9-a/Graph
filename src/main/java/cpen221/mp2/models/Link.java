@@ -44,6 +44,10 @@ public class Link extends Edge<Planet> implements GameElement {
         int length = distance <= 1 ? 1 : (int) distance;
         return new Link(p1, p2, length);
     }
+    @Override
+    public Link clone() {
+        return (Link) super.clone();
+    }
 
     /**
      * Return true iff this link and e share a planet.
