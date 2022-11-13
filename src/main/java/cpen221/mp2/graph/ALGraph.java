@@ -53,22 +53,22 @@ public class ALGraph<V extends Vertex, E extends Edge<V>> implements MGraph<V, E
      */
     @Override
     public boolean addEdge(E e) {
-        if (edge(e)){
-            return false;
-        }
-        else{
-            numE++;
-            setE.add(e);
-            for(List<V> l: adjList){
-                if(l.get(0).equals(e.v1())){
-                    l.add(e.v2());
+        if(!edge(e)){
+            if(vertex(e.v1()) && vertex(e.v2())) {
+                numE++;
+                setE.add(e);
+                for (List<V> l : adjList) {
+                    if (l.get(0).equals(e.v1())) {
+                        l.add(e.v2());
+                    }
+                    if (l.get(0).equals(e.v2())) {
+                        l.add(e.v1());
+                    }
                 }
-                if(l.get(0).equals(e.v2())){
-                    l.add(e.v1());
-                }
+                return true;
             }
-            return true;
         }
+        return false;
     }
 
     /**
@@ -120,7 +120,10 @@ public class ALGraph<V extends Vertex, E extends Edge<V>> implements MGraph<V, E
                 }
             }
         }
-        return 0;
+        else if(v1.equals(v2)){
+            return 0;
+        }
+        return -1;
     }
 
     /**

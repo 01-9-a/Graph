@@ -67,12 +67,14 @@ public class ALGraphTest {
         Vertex v4 = new Vertex(4, "D");
         Vertex v5 = new Vertex(2, "B");
         Vertex v6 = new Vertex(5, "E");
+        Vertex v7 = new Vertex(7, "F");
 
         Edge<Vertex> e1 = new Edge<>(v1, v2, 5);
         Edge<Vertex> e2 = new Edge<>(v2, v3);
         Edge<Vertex> e3 = new Edge<>(v1, v4, 9);
         Edge<Vertex> e4 = new Edge<>(v1, v4, 9);
         Edge<Vertex> e5 = new Edge<>(v1, v6, 3);
+        Edge<Vertex> e6 = new Edge<>(v1, v7, 3);
 
         ALGraph<Vertex, Edge<Vertex>> g = new ALGraph<>();
         g.addVertex(v1);
@@ -92,8 +94,11 @@ public class ALGraphTest {
         assertTrue(g.edge(e2));
         assertTrue(g.edge(v2, v3));
         assertFalse(g.edge(v4, v6));
+        assertFalse(g.addEdge(e6));
 
-        assertEquals(0, g.edgeLength(v4, v6));
+
+        assertEquals(-1, g.edgeLength(v4, v6));
+        assertEquals(0, g.edgeLength(v4, v4));
         assertEquals(15, g.edgeLengthSum());
     }
 
