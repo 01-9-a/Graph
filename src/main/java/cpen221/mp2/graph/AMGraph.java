@@ -4,22 +4,25 @@ import java.util.*;
 
 /**
  * This class represents the adjacency matrix representation for graph
- *
- * Abstract Invariant
  */
 
 public class AMGraph<V extends Vertex, E extends Edge<V>> implements MGraph<V, E> {
+    // Representation Invariant:
+    //   maximum number of vertices in the matrix
+    // Abstraction Function:
+    //   AF(r) = a matrix graph
+    //   amGraph.size() = maxVertices
 
-    /** The maximum number of vertices allowed  */
+    /** The maximum number of vertices allowed in the matrix */
     private final int maxVertices;
 
-    /** */
+    /** The adjacency matrix graph */
     private final int[][] amGraph;
 
-    /** */
-    private final List<V> vexs;
+    /** The list for all vertices */
+    private final List<V> vertices;
 
-    /** */
+    /** The list for all edges */
     private final List<E> edges;
 
     /**
@@ -31,7 +34,7 @@ public class AMGraph<V extends Vertex, E extends Edge<V>> implements MGraph<V, E
         // TODO: Implement this method
         this.maxVertices = maxVertices;
         amGraph = new int[maxVertices][maxVertices];
-        vexs = new ArrayList<>();
+        vertices = new ArrayList<>();
         edges = new ArrayList<>();
         for (int i=0; i<maxVertices; i++) {
             for (int j=0; j<maxVertices; j++) {
@@ -53,10 +56,10 @@ public class AMGraph<V extends Vertex, E extends Edge<V>> implements MGraph<V, E
      */
     @Override
     public boolean addVertex(V v) {
-        if (vexs.size()+1>maxVertices||vexs.contains(v)) {
+        if (vertices.size()+1>maxVertices|| vertices.contains(v)) {
             return false;
         }
-        vexs.add(v);
+        vertices.add(v);
         return true;
     }
 
@@ -68,7 +71,7 @@ public class AMGraph<V extends Vertex, E extends Edge<V>> implements MGraph<V, E
      */
     @Override
     public boolean vertex(V v) {
-        return vexs.contains(v);
+        return vertices.contains(v);
     }
 
     /**
@@ -84,12 +87,12 @@ public class AMGraph<V extends Vertex, E extends Edge<V>> implements MGraph<V, E
         if (edges.contains(e)) {
             return false;
         }
-        if (!vexs.contains(e.v1())||!vexs.contains(e.v2())) {
+        if (!vertices.contains(e.v1())||!vertices.contains(e.v2())) {
             return false;
         }
         edges.add(e);
-        amGraph[vexs.indexOf(e.v1())][vexs.indexOf(e.v2())]=e.length();
-        amGraph[vexs.indexOf(e.v2())][vexs.indexOf(e.v1())]=e.length();
+        amGraph[vertices.indexOf(e.v1())][vertices.indexOf(e.v2())]=e.length();
+        amGraph[vertices.indexOf(e.v2())][vertices.indexOf(e.v1())]=e.length();
         return true;
     }
 
@@ -97,7 +100,7 @@ public class AMGraph<V extends Vertex, E extends Edge<V>> implements MGraph<V, E
      * Check if an edge is part of the graph
      *
      * @param e the edge to check in the graph
-     * @return true if e is an edge in the graoh and false otherwise
+     * @return true if e is an edge in the graph and false otherwise
      */
     @Override
     public boolean edge(E e) {
@@ -174,11 +177,11 @@ public class AMGraph<V extends Vertex, E extends Edge<V>> implements MGraph<V, E
         if (!edges.contains(e)) {
             return false;
         }
-        if (!vexs.contains(e.v1())||!vexs.contains(e.v1())) {
+        if (!vertices.contains(e.v1())||!vertices.contains(e.v1())) {
             return false;
         }
-        amGraph[vexs.indexOf(e.v1())][vexs.indexOf(e.v2())] = -1;
-        amGraph[vexs.indexOf(e.v2())][vexs.indexOf(e.v1())] = -1;
+        amGraph[vertices.indexOf(e.v1())][vertices.indexOf(e.v2())] = -1;
+        amGraph[vertices.indexOf(e.v2())][vertices.indexOf(e.v1())] = -1;
         edges.remove(e);
         return true;
     }
@@ -192,15 +195,15 @@ public class AMGraph<V extends Vertex, E extends Edge<V>> implements MGraph<V, E
      */
     @Override
     public boolean remove(V v) {
-        if (!vexs.contains(v)) {
+        if (!vertices.contains(v)) {
             return false;
         }
         for (int i=0; i<maxVertices; i++) {
-            amGraph[vexs.indexOf(v)][i] = -1;
-            amGraph[i][vexs.indexOf(v)] = -1;
+            amGraph[vertices.indexOf(v)][i] = -1;
+            amGraph[i][vertices.indexOf(v)] = -1;
         }
         edges.removeIf(e -> v.equals(e.v1()) || v.equals(e.v2()));
-        vexs.remove(v);
+        vertices.remove(v);
         return true;
     }
 
@@ -212,7 +215,7 @@ public class AMGraph<V extends Vertex, E extends Edge<V>> implements MGraph<V, E
      */
     @Override
     public Set<V> allVertices() {
-        return new HashSet<>(vexs);
+        return new HashSet<>(vertices);
     }
 
     /**
