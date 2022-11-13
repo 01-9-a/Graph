@@ -51,11 +51,11 @@ public class Task3Test {
         g.addEdge(e5);
         g.addEdge(e6);
         g.addEdge(e7);
-        assertFalse(g.addEdge(e_not_exist1));
-        assertFalse(g.addEdge(e_not_exist2));
+        assertTrue(g.addEdge(e_not_exist1));
+        assertTrue(g.addEdge(e_not_exist2));
         g.addEdge(e_not_added);
-        assertFalse(g.remove(e_not_added));
         assertTrue(g.remove(e_not_added));
+        assertFalse(g.remove(e_not_added));
 
 
         assertEquals(e2, g.getEdge(v2, v3));
@@ -68,6 +68,8 @@ public class Task3Test {
                 NoSuchElementException.class, () -> {
                     g.getEdge(v6, v2);
                 });
+
+
         assertEquals(21, g.pathLength(g.shortestPath(v3, v4)));
         assertEquals(3, g.pathLength(g.shortestPath(v3, v5)));
         assertEquals(14, g.pathLength(g.shortestPath(v6, v1)));

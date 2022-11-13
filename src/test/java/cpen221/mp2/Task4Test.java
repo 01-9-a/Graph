@@ -144,4 +144,50 @@ public class Task4Test {
         set.add(g3);
         assertEquals(set, g.minimumSpanningComponents(3));
     }
+    @Test//k=6
+    public void test4() {
+        Graph<Vertex, Edge<Vertex>> g = new Graph<>();
+        g.addVertex(v1);
+        g.addVertex(v2);
+        g.addVertex(v3);
+        g.addVertex(v4);
+        g.addVertex(v5);
+        g.addVertex(v6);
+
+        g.addEdge(e1);
+        g.addEdge(e2);
+        g.addEdge(e3);
+        g.addEdge(e4);
+        g.addEdge(e5);
+        g.addEdge(e6);
+        g.addEdge(e7);
+
+        Graph<Vertex, Edge<Vertex>> g1 = new Graph<>();
+        Graph<Vertex, Edge<Vertex>> g2 = new Graph<>();
+        Graph<Vertex, Edge<Vertex>> g3 = new Graph<>();
+        Graph<Vertex, Edge<Vertex>> g4 = new Graph<>();
+        Graph<Vertex, Edge<Vertex>> g5 = new Graph<>();
+        Graph<Vertex, Edge<Vertex>> g6 = new Graph<>();
+        g1.addVertex(v1);
+        g1.addVertex(v2);
+        g1.addVertex(v3);
+        g1.addVertex(v4);
+        g1.addVertex(v5);
+        g1.addVertex(v6);
+
+        Set<Graph<Vertex, Edge<Vertex>> >set=new HashSet<>();
+        set.add(g1);
+        set.add(g2);
+        set.add(g3);
+        set.add(g4);
+        set.add(g5);
+        set.add(g6);
+        assertEquals(set, g.minimumSpanningComponents(6));
+    }
+
+    @Test
+    public void test_d(){
+
+    }
+
 }

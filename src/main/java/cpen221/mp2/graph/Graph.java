@@ -87,6 +87,7 @@ public class Graph<V extends Vertex, E extends Edge<V>> implements ImGraph<V, E>
         }
         return AllPath;
     }
+    public static void()
     /**
      * Compute the shortest path from source to sink
      *
@@ -449,14 +450,7 @@ public class Graph<V extends Vertex, E extends Edge<V>> implements ImGraph<V, E>
      */
     @Override
     public boolean addEdge(E e) {
-        boolean v1=al.containsKey(e.v1());
-        boolean v2=al.containsKey(e.v2());
-        if(!v1||!v2){
-            return false;
-        }
-        al.get(e.v1()).add(e);
-        al.get(e.v2()).add(e);
-        return true;
+        if()
     }
     /**
      * Check if an edge is part of the graph
@@ -546,10 +540,10 @@ public class Graph<V extends Vertex, E extends Edge<V>> implements ImGraph<V, E>
     public boolean remove(E e) {
         if(edge(e)){
             al.forEach((a,b) -> b.removeIf(c->c.equals(e)));
-            return false;
+            return true;
         }
 
-        return true;
+        return false;
     }
     /**
      * Remove a vertex from the graph
@@ -561,9 +555,9 @@ public class Graph<V extends Vertex, E extends Edge<V>> implements ImGraph<V, E>
     public boolean remove(V v) {
         if(vertex(v)){
             al.remove(v);
-            return false;
+            return true;
         }
-        return true;
+        return false;
     }
     /**
      * Obtain a set of all vertices in the graph.
@@ -688,18 +682,19 @@ public class Graph<V extends Vertex, E extends Edge<V>> implements ImGraph<V, E>
         }
     }
 
-    @Override
+   @Override
     public boolean equals(Object obj) {
         if (obj == null) {
             return false;
         }
-
         if (obj.getClass() != this.getClass()) {
             return false;
         }
-
         Graph<V, E> other = (Graph<V, E>) obj;
         if(other.al.size()==this.al.size()) {
+            return true;
+        }
+        if(other.al.equals(this.al)){
             return true;
         }
         return false;
@@ -709,5 +704,6 @@ public class Graph<V extends Vertex, E extends Edge<V>> implements ImGraph<V, E>
     public int hashCode() {
         return al.hashCode();
     }
+
 }
 
