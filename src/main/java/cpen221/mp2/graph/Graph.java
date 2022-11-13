@@ -151,19 +151,271 @@ public class Graph<V extends Vertex, E extends Edge<V>> implements ImGraph<V, E>
         return map;
     }
 
+
+    /**
+     * Return a set with k connected components of the graph.
+     *
+     * <ul>
+     * <li>When k = 1, the method returns one graph in the set, and that graph
+     * represents the minimum spanning tree of the graph.
+     * See: https://en.wikipedia.org/wiki/Minimum_spanning_tree</li>
+     *
+     * <li>When k = n, where n is the number of vertices in the graph, then
+     * the method returns a set of n graphs, and each graph contains a
+     * unique vertex and no edge.</li>
+     *
+     * <li>When k is in [2, n-1], the method partitions the graph into sub-graphs
+     * such that for any two vertices V_i and V_j, if vertex V_i is in subgraph
+     * G_a and vertex V_j is in subgraph G_b (a != b), and there is an edge
+     * between V_i and V_j then there must exist some vertex V_k in G_a such
+     * that the length of the edge between V_i and V_k is at most the length
+     * of the edge between V_i and V_j.</li>
+     * </ul>
+     *
+     * @param k number of connected component, k > minimum number of spanning components
+     * @return a set of graph partitions such that a vertex in one partition
+     * is no closer to a vertex in a different partition than it is to a vertex
+     * in its own partition.
+     */
     @Override
     public Set<ImGraph<V, E>> minimumSpanningComponents(int k) {
-        return null;
+        Set<Graph<V, E>> result = new HashSet<>();
+        Set<V> allV = allVertices();
+        List<E> allE = new ArrayList<>(allEdges().stream().toList());
+        //set of graphs (each vertex is a graph)
+        for (V v : allV) {
+            Graph<V, E> graph = new Graph<>();
+            graph.addVertex(v);
+            result.add(graph);
+        }
+        if (k == allV.size()) {
+            return new HashSet<>(result);
+        }
+        //list of edges ordered in ascending weight
+        List<Integer> sortE = new ArrayList<>();
+        for (E e : allE) {
+            sortE.add(e.length());
+        }
+        Collections.sort(sortE);
+        List<E> sortedE = new ArrayList<>();
+        for (int i : sortE) {
+            Iterator<E> iterator = allE.iterator();
+            while (iterator.hasNext()) {
+                E e = iterator.next();
+                if (e.length() == i) {
+                    sortedE.add(e);
+                    iterator.remove();
+                    break;
+                }
+            }
+        }
+        //while sortedE is nonempty
+        for (E e : sortedE) {
+            boolean willLoop = false;
+            for (Graph<V, E> g : result) {
+                if (g.allVertices().contains(e.v1()) && g.allVertices().contains(e.v2())) {
+                    willLoop = true;
+                    break;
+                }
+            }
+            //connect graphs
+            if (!willLoop) {
+                //two graphs to combine
+                List<Graph<V, E>> toCombine = new ArrayList<>();
+                Iterator<Graph<V, E>> iterator = result.iterator();
+                while (iterator.hasNext()) {
+                    Graph<V, E> g = iterator.next();
+                    if (g.allVertices().contains(e.v1())) {
+                        //record
+                        toCombine.add(g);
+                        iterator.remove();
+                    }
+                    if (g.allVertices().contains(e.v2())) {
+                        //record
+                        toCombine.add(g);
+                        iterator.remove();
+                    }
+                }
+                //combine
+                Graph<V, E> combinedG = new Graph<>();
+                combinedG.al.putAll(toCombine.get(0).al);
+                combinedG.al.putAll(toCombine.get(1).al);
+                combinedG.addEdge(e);
+                result.add(combinedG);
+            }
+            //number of connected components
+            if (result.size() == k) {
+                return new HashSet<>(result);
+            }
+        }
+        return new HashSet<>(result);
     }
 
+    /**
+     * Compute the diameter of the graph.
+     * <ul>
+     * <li>The diameter of a graph is the length of the longest shortest path in the graph.</li>
+     * <li>If a graph has multiple components then we will define the diameter
+     * as the diameter of the largest component.</li>
+     * </ul>
+     *
+     * @return the diameter of the graph.
+     */
     @Override
     public int diameter() {
-        return 0;
+        Set<Graph<V, E>> components = new HashSet<>();
+        Set<V> allV = allVertices();
+        Set<E> allE = allEdges();
+        //set of graphs (each vertex is a graph)
+        for (V v : allV) {
+            Graph<V, E> graph = new Graph<>();
+            graph.addVertex(v);
+            components.add(graph);
+        }
+        for(E e: allE){
+            boolean needConnect = true;
+            for (Graph<V, E> g : components) {
+                if (g.allVertices().contains(e.v1()) && g.allVertices().contains(e.v2())) {
+                    g.addEdge(e);
+                    needConnect = false;
+                }
+            }
+            //connect graphs
+            if (needConnect) {
+                //two graphs to combine
+                List<Graph<V, E>> toCombine = new ArrayList<>();
+                for (Graph<V, E> g : components) {
+                    if (g.allVertices().contains(e.v1())) {
+                        //record
+                        toCombine.add(g);
+                        components.remove(g);
+                    }
+                    if (g.allVertices().contains(e.v2())) {
+                        //record
+                        toCombine.add(g);
+                        components.remove(g);
+                    }
+                }
+                //combine
+                Graph<V, E> combinedG = new Graph<>();
+                combinedG.al.putAll(toCombine.get(0).al);
+                combinedG.al.putAll(toCombine.get(1).al);
+                combinedG.addEdge(e);
+                components.add(combinedG);
+            }
+        }
+        //find largest component
+        Graph<V, E> largestComponent = components.stream().toList().get(0);
+        for(Graph<V, E> g: components){
+            if(g.allVertices().size()>largestComponent.allVertices().size()){
+                largestComponent = g;
+            }
+            else if(g.allVertices().size()==largestComponent.allVertices().size()){
+                if(g.edgeLengthSum()>largestComponent.edgeLengthSum()){
+                    largestComponent = g;
+                }
+            }
+        }
+        //find the length of the longest shortest path of the largest component
+        Set<Integer> lengths = new HashSet<>();
+        for (V v : largestComponent.allVertices()) {
+            for (V vv : largestComponent.allVertices()) {
+                if (!v.equals(vv)) {
+                    lengths.add(pathLength(shortestPath(v, vv)));
+                }
+            }
+        }
+        return Collections.max(lengths);
     }
 
+    /**
+     * Compute the center of the graph.
+     *
+     * <ul>
+     * <li>For a vertex s, the eccentricity of s is defined as the maximum distance
+     * between s and any other vertex t in the graph.</li>
+     *
+     * <li>The center of a graph is the vertex with minimum eccentricity.</li>
+     *
+     * <li>If a graph is not connected, we will define the graph's center to be the
+     * center of the largest connected component.</li>
+     * </ul>
+     *
+     * @return the center of the graph.
+     */
     @Override
     public V getCenter() {
-        return null;
+        Set<Graph<V, E>> components = new HashSet<>();
+        Set<V> allV = allVertices();
+        Set<E> allE = allEdges();
+        //set of graphs (each vertex is a graph)
+        for (V v : allV) {
+            Graph<V, E> graph = new Graph<>();
+            graph.addVertex(v);
+            components.add(graph);
+        }
+        for(E e: allE){
+            boolean needConnect = true;
+            for (Graph<V, E> g : components) {
+                if (g.allVertices().contains(e.v1()) && g.allVertices().contains(e.v2())) {
+                    g.addEdge(e);
+                    needConnect = false;
+                }
+            }
+            //connect graphs
+            if (needConnect) {
+                //two graphs to combine
+                List<Graph<V, E>> toCombine = new ArrayList<>();
+                for (Graph<V, E> g : components) {
+                    if (g.allVertices().contains(e.v1())) {
+                        //record
+                        toCombine.add(g);
+                        components.remove(g);
+                    }
+                    if (g.allVertices().contains(e.v2())) {
+                        //record
+                        toCombine.add(g);
+                        components.remove(g);
+                    }
+                }
+                //combine
+                Graph<V, E> combinedG = new Graph<>();
+                combinedG.al.putAll(toCombine.get(0).al);
+                combinedG.al.putAll(toCombine.get(1).al);
+                combinedG.addEdge(e);
+                components.add(combinedG);
+            }
+        }
+        //find largest component
+        Graph<V, E> largestComponent = components.stream().toList().get(0);
+        for(Graph<V, E> g: components){
+            if(g.allVertices().size()>largestComponent.allVertices().size()){
+                largestComponent = g;
+            }
+            else if(g.allVertices().size()==largestComponent.allVertices().size()){
+                if(g.edgeLengthSum()>largestComponent.edgeLengthSum()){
+                    largestComponent = g;
+                }
+            }
+        }
+        //find center of the largest component
+        List<V> vertex = new ArrayList<>();
+        List<Integer> eccentricity = new ArrayList<>();
+        for (V v : largestComponent.allVertices()) {
+            int max = 0;
+            for (V vv : largestComponent.allVertices()) {
+                if (!v.equals(vv)) {
+                    int distance = pathLength(shortestPath(v, vv));
+                    if (distance > max) {
+                        max = distance;
+                    }
+                }
+            }
+            vertex.add(v);
+            eccentricity.add(max);
+        }
+        int indexOfV = eccentricity.indexOf(Collections.min(eccentricity));
+        return vertex.get(indexOfV);
     }
     /**
      * Add a vertex to the graph
