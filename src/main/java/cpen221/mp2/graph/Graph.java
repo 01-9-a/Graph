@@ -8,6 +8,10 @@ import java.util.*;
  * @param <V> represents a vertex type
  */
 public class Graph<V extends Vertex, E extends Edge<V>> implements ImGraph<V, E>, MGraph<V, E> {
+    //Rep invariant:
+    //  al is not null
+    //Abstract function:
+    //  represents a graph with vertices and edges
     public Map<V, HashSet<E>> al= new TreeMap<>(Comparator.comparingInt(Vertex::id));
     /**
      * Find the edge that connects two vertices if such an edge exists.
@@ -21,7 +25,6 @@ public class Graph<V extends Vertex, E extends Edge<V>> implements ImGraph<V, E>
     @Override
     public E getEdge(V v1, V v2) {
         int length=0;
-        int b=0;
         //MGraph mg=new ALGraph();
         Set<E> e_set =new HashSet<>(allEdges());
         if(edge(v1,v2)) {
@@ -102,7 +105,6 @@ public class Graph<V extends Vertex, E extends Edge<V>> implements ImGraph<V, E>
         for(ArrayList<V> al :AllPath){
             int length=0;
             for(int i=0;i<al.size()-1;i++){
-                //MGraph obj=new ALGraph();
                 length+= edgeLength(al.get(i),al.get(i+1));
             }
             if(length<min_length){
@@ -110,7 +112,10 @@ public class Graph<V extends Vertex, E extends Edge<V>> implements ImGraph<V, E>
                 shortest_path=new ArrayList<>(al);
             }
         }
-        return shortest_path;
+        if(shortest_path.size()>1){
+            return shortest_path;
+        }
+        throw new IllegalArgumentException("start and end are same vertex");
     }
 
     /**
@@ -144,7 +149,7 @@ public class Graph<V extends Vertex, E extends Edge<V>> implements ImGraph<V, E>
         for(V a:all_v){
             List<V> list=new ArrayList<>(shortestPath(v,a));
             int shortest_length=pathLength(list);
-            if(list.size()>=2&&shortest_length<=range){
+            if(shortest_length<=range){
                 map.put(a,getEdge(list.get(list.size()-2),a));
             }
         }
@@ -566,13 +571,9 @@ public class Graph<V extends Vertex, E extends Edge<V>> implements ImGraph<V, E>
             al.remove(v);
             Set<V> set=new HashSet<>(allVertices());
             for(V va:set){
-                Set<E> e_set=new HashSet<>(al.get(va));
-                for(E ea:e_set){
-                    if(ea.v1().equals(v)||ea.v2().equals(v)){
-                        e_set.remove(ea);
-                    }
-                    al.put(va, (HashSet<E>) e_set);
-                }
+                HashSet<E> e_set=new HashSet<>(al.get(va));
+                e_set.removeIf(ea -> ea.v1().equals(v) || ea.v2().equals(v));
+                al.put(va, e_set);
             }
             return true;
         }
@@ -636,7 +637,7 @@ public class Graph<V extends Vertex, E extends Edge<V>> implements ImGraph<V, E>
         return neighbour;
     }
 
-    /**
+/**
      * This method removes some edges at random while preserving connectivity
      * <p>
      * DO NOT CHANGE THIS METHOD
@@ -710,14 +711,9 @@ public class Graph<V extends Vertex, E extends Edge<V>> implements ImGraph<V, E>
             return false;
         }
         Graph<V, E> other = (Graph<V, E>) obj;
-        if(other.al.size()==this.al.size()) {
-            return true;
-        }
-        if(other.al.equals(this.al)){
-            return true;
-        }
-        return false;
-    }
+
+       return other.al.equals(this.al);
+   }
 
     @Override
     public int hashCode() {
