@@ -2,11 +2,24 @@ package cpen221.mp2.graph;
 
 import java.util.*;
 
+/**
+ * This class represents the adjacency matrix representation for graph
+ *
+ * Abstract Invariant
+ */
+
 public class AMGraph<V extends Vertex, E extends Edge<V>> implements MGraph<V, E> {
 
+    /** The maximum number of vertices allowed  */
     private final int maxVertices;
+
+    /** */
     private final int[][] amGraph;
+
+    /** */
     private final List<V> vexs;
+
+    /** */
     private final List<E> edges;
 
     /**
