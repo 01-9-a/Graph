@@ -449,16 +449,13 @@ public class Graph<V extends Vertex, E extends Edge<V>> implements ImGraph<V, E>
      */
     @Override
     public boolean addEdge(E e) {
-        if (!al.containsKey(e.v1())||!al.containsKey(e.v2())) {
-            return false;
-        }
-        if(!edge(e)){
-            if(vertex(e.v1())&&vertex(e.v2())){
-                al.get(e.v1()).add(e);
-                al.get(e.v2()).add(e);
+            if(!edge(e)){
+                if(vertex(e.v1())&&vertex(e.v2())){
+                    al.get(e.v1()).add(e);
+                    al.get(e.v2()).add(e);
+                }
+                return true;
             }
-            return true;
-        }
         return false;
     }
     /**
