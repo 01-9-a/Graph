@@ -7,11 +7,15 @@ import java.util.*;
  *
  * @param <V> represents a vertex type
  */
-public class Graph<V extends Vertex, E extends Edge<V>> implements ImGraph<V, E>, MGraph<V, E> {
+public class Graph<V extends Vertex, E extends Edge<V>> extends ALGraph<V, E> implements ImGraph<V, E>, MGraph<V, E> {
     // TODO: Implement this type
     // You can re-implement this graph, or use composition and
     // rely on your implementation of ALGraph or AMGraph
 
+    public Graph () {
+
+
+    }
     //// add all new code above this line ////
 
     /**
@@ -111,71 +115,6 @@ public class Graph<V extends Vertex, E extends Edge<V>> implements ImGraph<V, E>
 
     @Override
     public V getCenter() {
-        return null;
-    }
-
-    @Override
-    public boolean addVertex(V v) {
-        return false;
-    }
-
-    @Override
-    public boolean vertex(V v) {
-        return false;
-    }
-
-    @Override
-    public boolean addEdge(E e) {
-        return false;
-    }
-
-    @Override
-    public boolean edge(E e) {
-        return false;
-    }
-
-    @Override
-    public boolean edge(V v1, V v2) {
-        return false;
-    }
-
-    @Override
-    public int edgeLength(V v1, V v2) {
-        return 0;
-    }
-
-    @Override
-    public int edgeLengthSum() {
-        return 0;
-    }
-
-    @Override
-    public boolean remove(E e) {
-        return false;
-    }
-
-    @Override
-    public boolean remove(V v) {
-        return false;
-    }
-
-    @Override
-    public Set<V> allVertices() {
-        return null;
-    }
-
-    @Override
-    public Set<E> allEdges(V v) {
-        return null;
-    }
-
-    @Override
-    public Set<E> allEdges() {
-        return null;
-    }
-
-    @Override
-    public Map<V, E> getNeighbours(V v) {
         return null;
     }
 }
