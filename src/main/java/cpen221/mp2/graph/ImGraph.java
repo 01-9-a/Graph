@@ -99,5 +99,4 @@ public interface ImGraph<V extends Vertex, E extends Edge<V>> {
      */
     V getCenter();
 
-
 }
