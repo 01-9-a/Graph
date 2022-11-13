@@ -2,11 +2,14 @@ package cpen221.mp2.graph;
 import java.util.*;
 
 public class ALGraph<V extends Vertex, E extends Edge<V>> implements MGraph<V, E> {
-    int numV = 0;
-    int numE = 0;
-    Set<V> setV = new HashSet<>();
-    Set<E> setE = new HashSet<>();
-    List<List<V>> adjList = new ArrayList<>();
+    //Rep invariants:
+    //  data contains no duplicates
+    //Abstract function:
+    //  represents an adjacency list graph with setV.size() vertices and setE.size() edges
+
+    private final Set<V> setV = new HashSet<>();
+    private final Set<E> setE = new HashSet<>();
+    private final List<List<V>> adjList = new ArrayList<>();
 
     /**
      * Add a vertex to the adjacency list graph
@@ -20,7 +23,6 @@ public class ALGraph<V extends Vertex, E extends Edge<V>> implements MGraph<V, E
             return false;
         }
         else {
-            numV++;
             setV.add(v);
             List<V> list = new LinkedList<>();
             list.add(v);
@@ -49,13 +51,12 @@ public class ALGraph<V extends Vertex, E extends Edge<V>> implements MGraph<V, E
      * Add an edge of the adjacency list graph
      *
      * @param e the edge to add to the graph
-     * @return true if the edge was successfully added and false if already existed
+     * @return true if the edge was successfully added and false if already existed or any vertex does not exist
      */
     @Override
     public boolean addEdge(E e) {
         if(!edge(e)){
             if(vertex(e.v1()) && vertex(e.v2())) {
-                numE++;
                 setE.add(e);
                 for (List<V> l : adjList) {
                     if (l.get(0).equals(e.v1())) {
@@ -109,7 +110,7 @@ public class ALGraph<V extends Vertex, E extends Edge<V>> implements MGraph<V, E
      *
      * @param v1 the first vertex of the edge
      * @param v2 the second vertex of the edge
-     * @return the length of the v1-v2/v2-v1 edge if this edge is part of the graph else return 0
+     * @return the length of the v1-v2/v2-v1 edge if this edge is part of the graph else return -1, if v1=v2, return 0
      */
     @Override
     public int edgeLength(V v1, V v2) {
@@ -149,7 +150,6 @@ public class ALGraph<V extends Vertex, E extends Edge<V>> implements MGraph<V, E
     @Override
     public boolean remove(E e) {
         if (edge(e)) {
-            numE--;
             setE.remove(e);
             for(List<V> l: adjList){
                 if(l.get(0)==e.v1()){
@@ -176,7 +176,6 @@ public class ALGraph<V extends Vertex, E extends Edge<V>> implements MGraph<V, E
     @Override
     public boolean remove(V v) {
         if(vertex(v)){
-            numV--;
             setV.remove(v);
             adjList.removeIf(l -> l.get(0) == v);
             setE.removeIf(e -> e.v1().equals(v) || e.v2().equals(v));
