@@ -24,7 +24,6 @@ public class AMGraphTest {
     Edge<Vertex> e3 = new Edge<>(v1, v4, 9);
     Edge<Vertex> e4 = new Edge<>(v3, v4, 0);
     Edge<Vertex> e5 = new Edge<>(v2, v5, 11);
-    Edge<Vertex> e6 = new Edge<>(v2, v1, 5);
     int max = 4;
     AMGraph<Vertex, Edge<Vertex>> g = new AMGraph<>(max);
 
