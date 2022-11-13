@@ -24,7 +24,6 @@ public class Task4Test {
     Edge<Vertex> e7 = new Edge<>(v5, v6, 8);
 
 
-
     @Test
     public void test1() {
         Graph<Vertex, Edge<Vertex>> g = new Graph<>();
@@ -58,9 +57,9 @@ public class Task4Test {
         g1.addEdge(e6);
 
 
-        Set<ImGraph<Vertex, Edge<Vertex>> >set1=new HashSet<>();
+        Set<ImGraph<Vertex, Edge<Vertex>>> set1 = new HashSet<>();
         set1.add(g1);
-        Set<ImGraph<Vertex, Edge<Vertex>>> set_result =new HashSet<>(g.minimumSpanningComponents(1));
+        Set<ImGraph<Vertex, Edge<Vertex>>> set_result = new HashSet<>(g.minimumSpanningComponents(1));
 
         assertEquals(set1, set_result);
 
@@ -99,7 +98,7 @@ public class Task4Test {
 
         g2.addVertex(v4);
 
-        Set<Graph<Vertex, Edge<Vertex>> >set=new HashSet<>();
+        Set<Graph<Vertex, Edge<Vertex>>> set = new HashSet<>();
         set.add(g1);
         set.add(g2);
         assertEquals(set, g.minimumSpanningComponents(2));
@@ -138,12 +137,13 @@ public class Task4Test {
 
         g3.addVertex(v4);
 
-        Set<Graph<Vertex, Edge<Vertex>> >set=new HashSet<>();
+        Set<Graph<Vertex, Edge<Vertex>>> set = new HashSet<>();
         set.add(g1);
         set.add(g2);
         set.add(g3);
         assertEquals(set, g.minimumSpanningComponents(3));
     }
+
     @Test//k=6
     public void test4() {
         Graph<Vertex, Edge<Vertex>> g = new Graph<>();
@@ -169,24 +169,25 @@ public class Task4Test {
         Graph<Vertex, Edge<Vertex>> g5 = new Graph<>();
         Graph<Vertex, Edge<Vertex>> g6 = new Graph<>();
         g1.addVertex(v1);
-        g1.addVertex(v2);
-        g1.addVertex(v3);
-        g1.addVertex(v4);
-        g1.addVertex(v5);
-        g1.addVertex(v6);
+        g2.addVertex(v2);
+        g3.addVertex(v3);
+        g4.addVertex(v4);
+        g5.addVertex(v5);
+        g6.addVertex(v6);
 
-        Set<Graph<Vertex, Edge<Vertex>> >set=new HashSet<>();
+        Set<Graph<Vertex, Edge<Vertex>>> set = new HashSet<>();
         set.add(g1);
         set.add(g2);
         set.add(g3);
         set.add(g4);
         set.add(g5);
         set.add(g6);
-        assertEquals(set, g.minimumSpanningComponents(6));
+        Set<ImGraph<Vertex, Edge<Vertex>>> set_result = new HashSet<>(g.minimumSpanningComponents(6));
+        assertEquals(set, set_result);
     }
 
     @Test
-    public void test_d(){
+    public void test_d1() {
         Graph<Vertex, Edge<Vertex>> g = new Graph<>();
         g.addVertex(v1);
         g.addVertex(v2);
@@ -202,9 +203,24 @@ public class Task4Test {
         g.addEdge(e5);
         g.addEdge(e6);
         g.addEdge(e7);
-        int d= g.diameter();
-        assertEquals(15,g.diameter());
-
+        int d = g.diameter();
+        int path=g.pathLength(g.shortestPath(v2,v4));
+        assertEquals(24, g.diameter());
     }
 
+    @Test
+    public void test_d2() {
+        Edge<Vertex> e8 = new Edge<>(v1, v2, 5);
+        Edge<Vertex> e9=new Edge<>(v2,v3,2);
+        Graph<Vertex, Edge<Vertex>> g = new Graph<>();
+        g.addVertex(v1);
+        g.addVertex(v2);
+        g.addVertex(v3);
+
+        g.addEdge(e8);
+        g.addEdge(e9);
+
+        int d = g.diameter();
+        assertEquals(7, g.diameter());
+    }
 }

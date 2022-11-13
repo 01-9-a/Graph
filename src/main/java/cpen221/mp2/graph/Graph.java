@@ -449,6 +449,9 @@ public class Graph<V extends Vertex, E extends Edge<V>> implements ImGraph<V, E>
      */
     @Override
     public boolean addEdge(E e) {
+        if(!al.containsKey(e.v1())||!al.containsKey(e.v2())) {
+            return false;
+        }
             if(!edge(e)){
                 if(vertex(e.v1())&&vertex(e.v2())){
                     al.get(e.v1()).add(e);
@@ -561,6 +564,16 @@ public class Graph<V extends Vertex, E extends Edge<V>> implements ImGraph<V, E>
     public boolean remove(V v) {
         if(vertex(v)){
             al.remove(v);
+            Set<V> set=new HashSet<>(allVertices());
+            for(V va:set){
+                Set<E> e_set=new HashSet<>(al.get(va));
+                for(E ea:e_set){
+                    if(ea.v1().equals(v)||ea.v2().equals(v)){
+                        e_set.remove(ea);
+                    }
+                    al.put(va, (HashSet<E>) e_set);
+                }
+            }
             return true;
         }
         return false;

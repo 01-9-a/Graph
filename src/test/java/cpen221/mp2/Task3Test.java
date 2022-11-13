@@ -41,8 +41,8 @@ public class Task3Test {
         g.addVertex(v6);
         assertFalse(g.addVertex(v6));
         g.addVertex(v7);
-        assertFalse(g.remove(v7));
         assertTrue(g.remove(v7));
+        assertFalse(g.remove(v7));
 
         g.addEdge(e1);
         g.addEdge(e2);
@@ -51,8 +51,8 @@ public class Task3Test {
         g.addEdge(e5);
         g.addEdge(e6);
         g.addEdge(e7);
-        assertTrue(g.addEdge(e_not_exist1));
-        assertTrue(g.addEdge(e_not_exist2));
+        assertFalse(g.addEdge(e_not_exist1));
+        assertFalse(g.addEdge(e_not_exist2));
         g.addEdge(e_not_added);
         assertTrue(g.remove(e_not_added));
         assertFalse(g.remove(e_not_added));
