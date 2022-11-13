@@ -8,6 +8,10 @@ import java.util.*;
  * @param <V> represents a vertex type
  */
 public class Graph<V extends Vertex, E extends Edge<V>> implements ImGraph<V, E>, MGraph<V, E> {
+    //Rep invariant:
+    //  al is not null
+    //Abstract function:
+    //  represents a graph with vertices and edges
     public Map<V, HashSet<E>> al= new TreeMap<>(Comparator.comparingInt(Vertex::id));
     /**
      * Find the edge that connects two vertices if such an edge exists.

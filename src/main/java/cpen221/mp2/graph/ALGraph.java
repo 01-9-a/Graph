@@ -3,7 +3,8 @@ import java.util.*;
 
 public class ALGraph<V extends Vertex, E extends Edge<V>> implements MGraph<V, E> {
     //Rep invariants:
-    //  data contains no duplicates
+    //  setV, setE adjList are not null
+    //  0th index of each element of adjList are distinct
     //Abstract function:
     //  represents an adjacency list graph with setV.size() vertices and setE.size() edges
 
