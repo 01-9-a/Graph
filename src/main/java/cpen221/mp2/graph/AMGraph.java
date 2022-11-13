@@ -174,10 +174,10 @@ public class AMGraph<V extends Vertex, E extends Edge<V>> implements MGraph<V, E
      */
     @Override
     public boolean remove(E e) {
-        if (!edges.contains(e)) {
+        if (!vertices.contains(e.v1())||!vertices.contains(e.v1())) {
             return false;
         }
-        if (!vertices.contains(e.v1())||!vertices.contains(e.v1())) {
+        if (!edges.contains(e)) {
             return false;
         }
         amGraph[vertices.indexOf(e.v1())][vertices.indexOf(e.v2())] = -1;

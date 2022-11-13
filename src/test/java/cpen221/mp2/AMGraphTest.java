@@ -87,6 +87,7 @@ public class AMGraphTest {
         assertTrue(g.addEdge(e1));
         assertTrue(g.addEdge(e2));
         assertTrue(g.addEdge(e3));
+        assertFalse(g.remove(e5));
 
         Set<Vertex> expectedVex = new HashSet<>();
         expectedVex.add(v1);
@@ -111,5 +112,9 @@ public class AMGraphTest {
         expectedNeighbours.put(v2, e1);
         expectedNeighbours.put(v4, e3);
         assertEquals(expectedNeighbours, g.getNeighbours(v1));
+        Map<Vertex, Edge<Vertex>> expectedNeighbours1 = new HashMap<>();
+        expectedNeighbours1.put(v1, e3);
+        expectedNeighbours1.put(v3, e4);
+        assertEquals(expectedNeighbours1, g.getNeighbours(v4));
     }
 }
