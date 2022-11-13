@@ -289,16 +289,18 @@ public class Graph<V extends Vertex, E extends Edge<V>> implements ImGraph<V, E>
             if (needConnect) {
                 //two graphs to combine
                 List<Graph<V, E>> toCombine = new ArrayList<>();
-                for (Graph<V, E> g : components) {
+                Iterator<Graph<V, E>> iterator = components.iterator();
+                while (iterator.hasNext()) {
+                    Graph<V, E> g = iterator.next();
                     if (g.allVertices().contains(e.v1())) {
                         //record
                         toCombine.add(g);
-                        components.remove(g);
+                        iterator.remove();
                     }
                     if (g.allVertices().contains(e.v2())) {
                         //record
                         toCombine.add(g);
-                        components.remove(g);
+                        iterator.remove();
                     }
                 }
                 //combine
@@ -371,16 +373,18 @@ public class Graph<V extends Vertex, E extends Edge<V>> implements ImGraph<V, E>
             if (needConnect) {
                 //two graphs to combine
                 List<Graph<V, E>> toCombine = new ArrayList<>();
-                for (Graph<V, E> g : components) {
+                Iterator<Graph<V, E>> iterator = components.iterator();
+                while (iterator.hasNext()) {
+                    Graph<V, E> g = iterator.next();
                     if (g.allVertices().contains(e.v1())) {
                         //record
                         toCombine.add(g);
-                        components.remove(g);
+                        iterator.remove();
                     }
                     if (g.allVertices().contains(e.v2())) {
                         //record
                         toCombine.add(g);
-                        components.remove(g);
+                        iterator.remove();
                     }
                 }
                 //combine
